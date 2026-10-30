@@ -1,4 +1,5 @@
 # Cuphead for PortMaster on NextUI
+I used the Cuphead game files version 1.3.3 for playtesting.   
 
 NextUI launcher compatibility fixes for [wild1walker/portmaster-cuphead](https://github.com/wild1walker/portmaster-cuphead). Graphics and the system-aplay audio route were reported working by the owner on their TrimUI device running NextUI (described as Brick Pro; firmware reports Brick / PowerVR GE8300). Other devices have not been verified.
 
