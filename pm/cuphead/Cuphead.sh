@@ -2,7 +2,9 @@
 
 XDG_DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share}
 
-if [ -d "/opt/system/Tools/PortMaster/" ]; then
+if [ -n "$EMU_DIR" ] && [ -f "$EMU_DIR/control.txt" ]; then
+  controlfolder="$EMU_DIR"
+elif [ -d "/opt/system/Tools/PortMaster/" ]; then
   controlfolder="/opt/system/Tools/PortMaster"
 elif [ -d "/opt/tools/PortMaster/" ]; then
   controlfolder="/opt/tools/PortMaster"
@@ -12,7 +14,7 @@ else
   controlfolder="/roms/ports/PortMaster"
 fi
 
-source $controlfolder/control.txt
+source "$controlfolder/control.txt"
 # Unity's Android player for Cuphead is 32-bit: a firmware without 32-bit (armhf) libraries gets
 # the 64-bit build (CUPHEAD_ROUTE=64 picks it on one that has them). A build that is set up, or a
 # setup under way, keeps its route (the libraries' check alone flipped between launches on muOS).

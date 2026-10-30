@@ -1,0 +1,47 @@
+name: Release Cuphead for NextUI
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/release-nextui.yml
+      - tools/build_nextui_release.py
+      - RELEASE-NOTES.txt
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: release-nextui-2026.10.31
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check launcher syntax
+        run: |
+          bash -n pm/cuphead/Cuphead.sh
+          bash -n pm/cuphead/cuphead/launch64.sh
+          python -m py_compile tools/build_nextui_release.py
+      - name: Build and audit packages without user game data
+        run: python tools/build_nextui_release.py --output dist
+      - name: Check archive integrity and checksums
+        working-directory: dist
+        run: |
+          sha256sum -c SHA256SUMS.txt
+          python -m zipfile -t cuphead-nextui-2026.10.31.zip
+          python -m zipfile -t cuphead-nextui-scripts-2026.10.31.zip
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create nextui-2026.10.31 \
+            dist/cuphead-nextui-2026.10.31.zip \
+            dist/cuphead-nextui-scripts-2026.10.31.zip \
+            dist/SHA256SUMS.txt \
+            --target "$GITHUB_SHA" \
+            --title "Cuphead for NextUI 2026.10.31" \
+            --notes-file RELEASE-NOTES.txt
